@@ -31,7 +31,7 @@ pipeline {
 
                 script { 
 
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER" 
+                    dockerImage = docker.build pushpa708/mca-batch-24 + ":123" 
 
                 }
 
