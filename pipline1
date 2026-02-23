@@ -1,0 +1,70 @@
+pipeline { 
+
+    environment { 
+
+        registry = "pushpa708/mca-batch-24"
+
+
+        registryCredential = '3d1c0865-4e4d-4cdb-90c7-6564d01e48fe' 
+
+        dockerImage = '' 
+
+    }
+
+    agent any 
+
+    stages { 
+
+        stage('Cloning our Git') { 
+
+            steps { 
+
+                git 'https://github.com/PushpaChandu/dockerpipelinetest1.git' 
+
+            }
+
+        } 
+
+        stage('Building our image') { 
+
+            steps { 
+
+                script { 
+
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER" 
+
+                }
+
+            } 
+
+        }
+
+        stage('Deploy our image') { 
+
+            steps { 
+
+                script { 
+
+                    docker.withRegistry( '', registryCredential ) { 
+
+                        dockerImage.push() 
+
+                    }
+
+                } 
+
+            }
+
+        } 
+
+        stage('Cleaning up') { 
+
+            steps { 
+                sh "docker rmi $registry:$BUILD_NUMBER" 
+
+            }
+
+        } 
+    }
+
+}
